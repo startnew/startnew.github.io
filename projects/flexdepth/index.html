@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexDepth: A Flexible Scale-Driven Family for Self-Supervised Monocular Depth Estimation</title>
+    <link rel="stylesheet" href="/projects/flexdepth/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><h2>FlexDepth</h2></div>
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#method">Method</a>
+                <a href="#results">Results</a>
+                <a href="#comparison">Video</a>
+                <a href="#citation">Citation</a>
+                <a href="https://github.com/startnew/flexdepth" target="_blank" class="nav-github"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <h2 class="banner-title">FlexDepth</h2>
+                <h3 class="banner-subtitle"><span style="background: linear-gradient(135deg, rgb(79,112,242), rgb(132,151,239)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Towards Robust Driving Perception:</span><br>A Flexible Scale-Driven Family for Self-Supervised Monocular Depth Estimation</h3>
+                <span class="conference-badge">ECCV 2026</span>
+                <div class="authors">
+                    <span class="author-item"><a href="https://github.com/startnew" target="_blank">Zhaowen Zhu<sup>*</sup></a><sup>1,3</sup></span>
+                    <span class="author-item"><a href="javascript:void(0)">Li Zhang<sup>&dagger;</sup></a><sup>1</sup></span>
+                    <span class="author-item"><a href="https://github.com/ishrouder" target="_blank">Yujie Chen<sup>*</sup></a><sup>1</sup></span>
+                    <span class="author-item"><a href="javascript:void(0)">Tian Zhang</a><sup>1,4</sup></span>
+                    <span class="author-item"><a href="javascript:void(0)">Yingjie Wang</a><sup>2</sup></span>
+                    <span class="author-item"><a href="javascript:void(0)">Mingxia Zhan</a><sup>1</sup></span>
+                </div>
+                <div class="affiliations">
+                    <span><sup>1</sup> Hefei University of Technology</span>
+                    <span><sup>2</sup> Nanjing University of Posts and Telecommunications</span>
+                    <span><sup>3</sup> Chengpin Home Tech</span>
+                    <span><sup>4</sup> Differential Robotics</span>
+                </div>
+                <span class="footnote">* Equal contribution &nbsp;&nbsp; &dagger; Corresponding author</span>
+                <div class="banner-links">
+                    <a href="/projects/flexdepth/assets/flexdepth_eccv2026.pdf" target="_blank" class="link-btn"><i class="fas fa-file-pdf"></i> Paper</a>
+                    <a href="https://arxiv.org/abs/2607.00736" target="_blank" class="link-btn"><i class="fas fa-graduation-cap"></i> arXiv</a>
+                    <a href="https://github.com/startnew/flexdepth" target="_blank" class="link-btn"><i class="fab fa-github"></i> Code</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TL;DR + Teaser -->
+    <div class="page-content-card">
+    <section class="main-demo">
+        <div class="container">
+            <div class="tldr-content animate-on-scroll">
+                <div class="tldr-icon"><i class="fas fa-bolt"></i></div>
+                <div class="tldr-text">
+                    <p>
+                        <strong>TL;DR:</strong>
+                        FlexDepth is a scale-driven family of self-supervised monocular depth models that achieves SOTA across arbitrary scales with minimal computational overhead.
+                        Our smallest model, <strong>Flex-Nano</strong>, requires only <strong>0.7 GFLOPs</strong> and achieves <strong>37.6 FPS</strong> on mobile platforms.
+                    </p>
+                </div>
+            </div>
+            <div class="teaser-container animate-on-scroll">
+                <img src="/projects/flexdepth/assets/imgs/kitti_gflops_vs_accuracy.png" alt="Accuracy vs. Computational Cost on KITTI" class="teaser-image clickable-img" onclick="openLightbox(this)">
+                <p class="figure-caption">Accuracy (&delta;&lt;1.25) vs. Computational Cost on KITTI Eigen split. FlexDepth achieves the best trade-off across all model scales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section id="overview" class="abstract">
+        <div class="container">
+            <div class="abstract-content animate-on-scroll">
+                <h3><i class="fas fa-file-alt"></i> Abstract</h3>
+                <p>Self-Supervised Monocular Depth Estimation (MDE) has garnered attention in recent years due to its independence from ground truth. However, most existing models are limited to a single scale and exhibit considerable performance degradation in complex driving environments. Networks specifically designed to handle dynamic traffic participants tend to be overly complex, hindering their deployment on resource-constrained automotive edge devices. To address these limitations and move towards robust driving perception, we propose <strong>FlexDepth</strong>, a scale-driven and flexible family of self-supervised MDE models tailored for challenging road scenarios. FlexDepth employs a <strong>two-stage static-dynamic decoupled training strategy</strong>, enabling the independent assessment of confidence for both static backgrounds and dynamic road objects. Furthermore, it introduces a meticulously designed <strong>Scale-Driven Decoder (SDD)</strong> to dynamically select components based on scale size, facilitating efficient feature fusion and the output of high-precision depth maps. Extensive experiments on standard driving benchmarks demonstrate that without any auxiliary information, our model achieves state-of-the-art performance across arbitrary scales with minimal computational overhead. Our smallest model, <strong>Flex-Nano</strong>, requires only <strong>0.7 GFLOPs</strong> and achieves <strong>37.6 FPS</strong> on mobile platforms, ensuring reliable real-time perception while maintaining excellent zero-shot generalization.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method -->
+    <section id="method" class="method-section">
+        <div class="container">
+            <h2 class="section-title">Method</h2>
+            <div class="method-block animate-on-scroll">
+                <div class="method-figure">
+                    <img src="/projects/flexdepth/assets/imgs/system_overview.jpg" alt="FlexDepth System Overview" class="method-image clickable-img" onclick="openLightbox(this)">
+                    <p class="figure-caption">Overview of the FlexDepth architecture. The training process is structured into two stages: Stage 1 jointly optimizes the Depth Network and PoseNet; Stage 2 introduces the static-dynamic decoupled mask for dynamic scene refinement.</p>
+                </div>
+            </div>
+            <div class="contributions-grid">
+                <div class="contribution-card animate-on-scroll">
+                    <div class="contribution-icon"><i class="fas fa-layer-group"></i></div>
+                    <h3>Scale-Driven Decoder</h3>
+                    <p>A novel decoder that adaptively selects its constituent components (Post-Convolution, Upsampling, Prediction Head) based on model scale, enabling efficient feature fusion and high-precision depth output across Nano to X-Large variants.</p>
+                </div>
+                <div class="contribution-card animate-on-scroll">
+                    <div class="contribution-icon"><i class="fas fa-masks-theater"></i></div>
+                    <h3>Static-Dynamic Decoupled Training</h3>
+                    <p>A two-stage training strategy that independently assesses confidence for static backgrounds and dynamic objects via an adaptive thresholding mechanism, achieving superior robustness in dynamic driving scenes without extra inference overhead.</p>
+                </div>
+                <div class="contribution-card animate-on-scroll">
+                    <div class="contribution-icon"><i class="fas fa-gauge-high"></i></div>
+                    <h3>Flexible Model Family</h3>
+                    <p>Five model scales (Nano, Small, Medium, Large, X-Large) covering 0.7 to 24.6 GFLOPs. Flex-Nano achieves 37.6 FPS on mobile platforms, while Flex-X-Large sets new SOTA on KITTI and Cityscapes benchmarks.</p>
+                </div>
+            </div>
+            <div class="method-details">
+                <div class="detail-row animate-on-scroll">
+                    <div class="detail-text">
+                        <h3><i class="fas fa-cubes"></i> Post-Convolution Design</h3>
+                        <p>We remove the pre-convolution stage entirely and redesign the post-convolution with two Bottleneck variants: <strong>High-Efficiency Bottleneck (HEB)</strong> for small models prioritizing gradient flow richness, and <strong>High-Performance Bottleneck (HPB)</strong> for large models capturing finer-grained local features via CSP structure.</p>
+                    </div>
+                </div>
+                <div class="detail-row animate-on-scroll">
+                    <div class="detail-text">
+                        <h3><i class="fas fa-up-right-and-down-left-from-center"></i> Dynamic Upsampling</h3>
+                        <p>Instead of content-agnostic bilinear interpolation that causes blurred boundaries, we predict upsampling offsets adaptively based on semantic content. This enables non-uniform upsampling that generates sharper and more accurate structural boundaries.</p>
+                    </div>
+                </div>
+                <div class="detail-row animate-on-scroll">
+                    <div class="detail-text">
+                        <h3><i class="fas fa-shield-halved"></i> Adaptive Masking with MuPredictor</h3>
+                        <p>The static-dynamic decoupled mask employs an adaptive thresholding function that dynamically adjusts sensitivity based on feature evolution between early and late training stages, ensuring only stable static pixels contribute to confidence evaluation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section id="results" class="results-section">
+        <div class="container">
+            <h2 class="section-title">Results</h2>
+
+            <div class="result-block animate-on-scroll">
+                <h3 class="result-subtitle"><i class="fas fa-chart-bar"></i> KITTI Eigen Split</h3>
+                <div class="table-wrapper">
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th><th>Year</th>
+                                <th>Abs Rel &darr;</th><th>Sq Rel &darr;</th><th>RMSE &darr;</th><th>RMSE log &darr;</th>
+                                <th>&delta;&lt;1.25 &uarr;</th><th>&delta;&lt;1.25&sup2; &uarr;</th><th>&delta;&lt;1.25&sup3; &uarr;</th>
+                                <th>FLOPs(G) &darr;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="group-header"><td colspan="10">Lightweight (&lt;10 GFLOPs)</td></tr>
+                            <tr><td>Monodepth2</td><td>2019</td><td>0.115</td><td>0.903</td><td>4.863</td><td>0.193</td><td>0.877</td><td>0.959</td><td>0.981</td><td>8.0</td></tr>
+                            <tr><td>Lite-Mono-Tiny</td><td>2023</td><td>0.110</td><td>0.837</td><td>4.710</td><td>0.187</td><td>0.880</td><td>0.960</td><td>0.982</td><td>2.8</td></tr>
+                            <tr><td>Lite-Mono-Small</td><td>2023</td><td>0.110</td><td>0.802</td><td>4.671</td><td>0.186</td><td>0.879</td><td>0.961</td><td>0.982</td><td>4.7</td></tr>
+                            <tr><td>Lite-Mono</td><td>2023</td><td>0.107</td><td>0.765</td><td>4.561</td><td>0.183</td><td>0.886</td><td>0.963</td><td>0.983</td><td>5.0</td></tr>
+                            <tr><td>PuriLight</td><td>2026</td><td>0.106</td><td>0.747</td><td>4.536</td><td>0.182</td><td class="best">0.890</td><td class="best">0.964</td><td class="best">0.984</td><td>7.1</td></tr>
+                            <tr class="ours"><td><strong>Flex-Nano (Ours)</strong></td><td>2026</td><td>0.110</td><td>0.794</td><td>4.678</td><td>0.184</td><td>0.878</td><td>0.961</td><td>0.983</td><td class="best">0.7</td></tr>
+                            <tr class="ours"><td><strong>Flex-Small (Ours)</strong></td><td>2026</td><td class="best">0.104</td><td class="best">0.713</td><td class="best">4.458</td><td class="best">0.179</td><td class="best">0.890</td><td class="best">0.964</td><td>0.983</td><td>2.8</td></tr>
+                            <tr class="group-header"><td colspan="10">Medium (10&ndash;20 GFLOPs)</td></tr>
+                            <tr><td>Lite-Mono-8M</td><td>2023</td><td>0.101</td><td>0.729</td><td>4.454</td><td>0.178</td><td>0.897</td><td>0.965</td><td>0.983</td><td>11.2</td></tr>
+                            <tr><td>GeoDepth</td><td>2025</td><td>0.100</td><td>0.694</td><td>4.381</td><td>0.176</td><td>0.897</td><td>0.966</td><td>0.984</td><td>11.9</td></tr>
+                            <tr><td>TinyDepth</td><td>2024</td><td>0.096</td><td>0.665</td><td>4.249</td><td class="best">0.171</td><td>0.904</td><td class="best">0.968</td><td class="best">0.985</td><td>13.3</td></tr>
+                            <tr class="ours"><td><strong>Flex-Medium (Ours)</strong></td><td>2026</td><td>0.096</td><td class="best">0.639</td><td>4.253</td><td>0.172</td><td>0.903</td><td class="best">0.968</td><td class="best">0.985</td><td class="best">10.0</td></tr>
+                            <tr class="ours"><td><strong>Flex-Large (Ours)</strong></td><td>2026</td><td class="best">0.095</td><td>0.642</td><td class="best">4.199</td><td class="best">0.171</td><td class="best">0.906</td><td class="best">0.968</td><td>0.984</td><td>11.5</td></tr>
+                            <tr class="group-header"><td colspan="10">Large (&gt;20 GFLOPs)</td></tr>
+                            <tr><td>MonoViT</td><td>2022</td><td>0.099</td><td>0.708</td><td>4.372</td><td>0.175</td><td>0.900</td><td>0.967</td><td>0.984</td><td>59.7</td></tr>
+                            <tr><td>FGTO<sup>&dagger;</sup></td><td>2024</td><td>0.096</td><td>0.696</td><td>4.327</td><td>0.174</td><td>0.904</td><td>0.968</td><td class="best">0.985</td><td>59.7</td></tr>
+                            <tr><td>DSI-MonoViT</td><td>2025</td><td>0.096</td><td>0.711</td><td>4.321</td><td>0.172</td><td>0.905</td><td>0.968</td><td>0.984</td><td>59.7</td></tr>
+                            <tr><td>Self-Distillation</td><td>2025</td><td>0.095</td><td>0.619</td><td>4.156</td><td>0.169</td><td>0.905</td><td class="best">0.969</td><td class="best">0.985</td><td>64.5</td></tr>
+                            <tr class="ours highlight"><td><strong>Flex-X-Large (Ours)</strong></td><td>2026</td><td class="best">0.093</td><td class="best">0.605</td><td class="best">4.114</td><td class="best">0.167</td><td class="best">0.910</td><td class="best">0.969</td><td class="best">0.985</td><td class="best">24.6</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Quantitative results on KITTI Eigen split (640&times;192). Flex-X-Large achieves SOTA with only 24.6G FLOPs &mdash; 2.4&times; fewer than the next best method.</p>
+            </div>
+
+            <div class="result-block animate-on-scroll">
+                <h3 class="result-subtitle"><i class="fas fa-tachometer-alt"></i> Efficiency &amp; Speed</h3>
+                <div class="table-wrapper">
+                    <table class="result-table speed-table">
+                        <thead><tr><th>Model</th><th>Params(M)</th><th>FLOPs(G)</th><th>RTX 4090</th><th>V100</th><th>SD 8 Elite</th></tr></thead>
+                        <tbody>
+                            <tr class="ours"><td><strong>Flex-Nano</strong></td><td>1.5</td><td>0.7</td><td class="best">1583</td><td class="best">774</td><td class="best">37.6</td></tr>
+                            <tr class="ours"><td><strong>Flex-Small</strong></td><td>6.1</td><td>2.8</td><td>1215</td><td>606</td><td>18.6</td></tr>
+                            <tr class="ours"><td><strong>Flex-Medium</strong></td><td>12.7</td><td>10.0</td><td>510</td><td>231</td><td>5.8</td></tr>
+                            <tr class="ours"><td><strong>Flex-Large</strong></td><td>15.2</td><td>11.5</td><td>467</td><td>216</td><td>5.2</td></tr>
+                            <tr class="ours"><td><strong>Flex-X-Large</strong></td><td>32.3</td><td>24.6</td><td>321</td><td>130</td><td>3.0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Inference speed across platforms. Flex-Nano achieves real-time performance even on mobile devices (Snapdragon 8 Elite).</p>
+            </div>
+
+            <div class="result-block animate-on-scroll">
+                <h3 class="result-subtitle"><i class="fas fa-image"></i> Qualitative Results</h3>
+                <div class="qualitative-grid">
+                    <div class="qualitative-item"><img src="/projects/flexdepth/assets/imgs/cityscapes_comparison.jpg" alt="Cityscapes Comparison" class="clickable-img" onclick="openLightbox(this)"><p class="figure-caption">Cityscapes: FlexDepth produces sharper boundaries and more robust depth in dynamic regions compared to DSI and ProDepth.</p></div>
+                    <div class="qualitative-item"><img src="/projects/flexdepth/assets/imgs/kitti_comparison.jpg" alt="KITTI Comparison" class="clickable-img" onclick="openLightbox(this)"><p class="figure-caption">KITTI: FlexDepth preserves fine-grained details and object contours, outperforming Monodepth2, MonoViT, and Lite-Mono.</p></div>
+                    <div class="qualitative-item"><img src="/projects/flexdepth/assets/imgs/cityscapes_suppl.jpg" alt="Cityscapes Extended" class="clickable-img" onclick="openLightbox(this)"><p class="figure-caption">Extended Cityscapes qualitative results showing consistent superiority across diverse dynamic scenarios.</p></div>
+                    <div class="qualitative-item"><img src="/projects/flexdepth/assets/imgs/kitti_suppl.jpg" alt="KITTI Extended" class="clickable-img" onclick="openLightbox(this)"><p class="figure-caption">Extended KITTI qualitative results demonstrating robust depth estimation across various driving scenes.</p></div>
+                </div>
+            </div>
+
+            <div class="result-block animate-on-scroll">
+                <h3 class="result-subtitle"><i class="fas fa-scale-balanced"></i> Comparison with Foundation Depth Models</h3>
+                <div class="table-wrapper">
+                    <table class="result-table foundation-table">
+                        <thead><tr><th>Method</th><th>Type</th><th>Params</th><th>FLOPs(G)</th><th>Resolution</th><th>Abs Rel &darr;</th><th>&delta;&lt;1.25 &uarr;</th></tr></thead>
+                        <tbody>
+                            <tr><td>DA2 (ViT-L)</td><td>Zero-Shot</td><td>335M</td><td>1947</td><td>1722&times;518</td><td>0.070</td><td class="best">0.956</td></tr>
+                            <tr><td>DA2 (ViT-S)</td><td>Zero-Shot</td><td>25M</td><td>137</td><td>1722&times;518</td><td>0.077</td><td>0.944</td></tr>
+                            <tr><td>DA2 (ViT-L)</td><td>Zero-Shot</td><td>335M</td><td>276</td><td>644&times;196</td><td>0.092</td><td>0.915</td></tr>
+                            <tr><td>DA2 (ViT-S)</td><td>Zero-Shot</td><td>25M</td><td>19</td><td>644&times;196</td><td>0.110</td><td>0.881</td></tr>
+                            <tr class="ours highlight"><td><strong>Flex-X-Large (Ours)</strong></td><td>Self-Supervised</td><td>32M</td><td class="best">25</td><td>640&times;192</td><td class="best">0.063</td><td>0.952</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-caption">Comparison with Depth Anything V2 on KITTI Eigen split. Flex-X-Large achieves superior Abs Rel (0.063 vs. 0.070) with 78&times; fewer FLOPs and 10&times; fewer parameters than DA2 ViT-L at highest resolution.</p>
+            </div>
+
+            <!-- Zoom Comparison Viewer -->
+            <div class="result-block animate-on-scroll">
+                <h3 class="result-subtitle"><i class="fas fa-magnifying-glass-plus"></i> Zoomed Comparison with Depth Anything V2</h3>
+                <p class="section-intro">Click on a scene, then click the original image or any depth map to view the zoomed comparison in fullscreen. Red boxes indicate magnified regions.</p>
+                <div class="zoom-viewer">
+                    <div class="scene-selector">
+                        <button class="scene-btn active" onclick="setScene(0)">Scene 77<br><small>Pedestrian (3&times;)</small></button>
+                        <button class="scene-btn" onclick="setScene(1)">Scene 44<br><small>Tree trunks (3&times;)</small></button>
+                        <button class="scene-btn" onclick="setScene(2)">Scene 10<br><small>Distant vehicle (6&times;)</small></button>
+                        <button class="scene-btn" onclick="setScene(3)">Scene 99<br><small>Traffic sign (6&times;)</small></button>
+                    </div>
+                    <div class="zoom-main">
+                        <div class="zoom-original" onclick="openZoomOverlay()" title="Click to view fullscreen comparison">
+                            <img id="zoomOriginal" src="/projects/flexdepth/assets/imgs/depth_compare/000077_original.png" alt="Original Image">
+                            <div class="zoom-rect" id="zoomRect"></div>
+                        </div>
+                        <div class="zoom-comparisons">
+                            <div class="zoom-comp-item" onclick="openZoomOverlay()">
+                                <div class="zoom-comp-label">DA2 ViT-L (1722&times;518)</div>
+                                <img class="zoom-comp-img" id="compVitL518" src="/projects/flexdepth/assets/imgs/depth_compare/000077_vitl_518.png" alt="DA2 ViT-L 518">
+                            </div>
+                            <div class="zoom-comp-item" onclick="openZoomOverlay()">
+                                <div class="zoom-comp-label">DA2 ViT-L (644&times;196)</div>
+                                <img class="zoom-comp-img" id="compVitL644" src="/projects/flexdepth/assets/imgs/depth_compare/000077_vitl_644.png" alt="DA2 ViT-L 644">
+                            </div>
+                            <div class="zoom-comp-item" onclick="openZoomOverlay()">
+                                <div class="zoom-comp-label">DA2 ViT-S (1722&times;518)</div>
+                                <img class="zoom-comp-img" id="compVitS518" src="/projects/flexdepth/assets/imgs/depth_compare/000077_vits_518.png" alt="DA2 ViT-S 518">
+                            </div>
+                            <div class="zoom-comp-item" onclick="openZoomOverlay()">
+                                <div class="zoom-comp-label">DA2 ViT-S (644&times;196)</div>
+                                <img class="zoom-comp-img" id="compVitS644" src="/projects/flexdepth/assets/imgs/depth_compare/000077_vits_644.png" alt="DA2 ViT-S 644">
+                            </div>
+                            <div class="zoom-comp-item ours-comp" onclick="openZoomOverlay()">
+                                <div class="zoom-comp-label">Flex-X-Large (Ours)</div>
+                                <img class="zoom-comp-img" id="compOurs" src="/projects/flexdepth/assets/imgs/depth_compare/000077_oursx.png" alt="Flex-X-Large">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Videos -->
+    <section id="comparison" class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">Video Comparison</h2>
+            <div class="comparison-carousel animate-on-scroll">
+                <div class="carousel-container">
+                    <button class="carousel-btn prev-btn" onclick="changeVideo(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-content">
+                        <div class="comparison-slide active">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video0"><source src="/projects/flexdepth/assets/videos/flexdepth_kitti.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>FlexDepth on KITTI</h3><p>Depth estimation results of all FlexDepth model variants on the KITTI test dataset, demonstrating consistent depth quality from Flex-Nano to Flex-X-Large.</p></div>
+                        </div>
+                        <div class="comparison-slide">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video1"><source src="/projects/flexdepth/assets/videos/flexdepth_cityscapes.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>FlexDepth on Cityscapes</h3><p>Depth estimation results on the Cityscapes test dataset. FlexDepth produces sharp object boundaries and robust depth predictions even in highly dynamic urban scenarios.</p></div>
+                        </div>
+                        <div class="comparison-slide">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video2"><source src="/projects/flexdepth/assets/videos/comparison_kitti_drive0005.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>Model Comparison &mdash; KITTI Drive 0005</h3><p>Comparison with 6 baselines (LiteMono-Tiny, LiteMono-Small, LiteMono, LiteMono-8M, MonoDepth2, MonoViT) and 5 FlexDepth variants. Layout: Original Image | Baselines | Ours.</p></div>
+                        </div>
+                        <div class="comparison-slide">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video3"><source src="/projects/flexdepth/assets/videos/comparison_kitti_drive0009.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>Model Comparison &mdash; KITTI Drive 0009</h3><p>Additional driving sequence comparison on KITTI. FlexDepth models demonstrate superior depth estimation quality across all model scales with sharper boundaries.</p></div>
+                        </div>
+                        <div class="comparison-slide">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video4"><source src="/projects/flexdepth/assets/videos/flex_n_mobile.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>Flex-Nano on Mobile (Snapdragon 8 Elite)</h3><p>Real-time inference of Flex-Nano (ONNX, 0.7 GFLOPs) on a Snapdragon 8 Elite device, achieving 37.6 FPS. Recorded October 2025.</p></div>
+                        </div>
+                        <div class="comparison-slide">
+                            <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" id="video5"><source src="/projects/flexdepth/assets/videos/flex_x_mobile.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                            <div class="comparison-info"><h3>Flex-X-Large on Mobile (Snapdragon 8 Elite)</h3><p>Flex-X-Large (ONNX, 24.6 GFLOPs) running on a Snapdragon 8 Elite device. The average FPS shown is slightly lower than the 3.0 FPS reported in the paper due to device temperature and OS changes at the time of this recording (July 2026).</p></div>
+                        </div>
+                    </div>
+                    <button class="carousel-btn next-btn" onclick="changeVideo(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="carousel-indicators">
+                    <span class="indicator active" onclick="setVideo(0)"></span>
+                    <span class="indicator" onclick="setVideo(1)"></span>
+                    <span class="indicator" onclick="setVideo(2)"></span>
+                    <span class="indicator" onclick="setVideo(3)"></span>
+                    <span class="indicator" onclick="setVideo(4)"></span>
+                    <span class="indicator" onclick="setVideo(5)"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation -->
+    <section id="citation" class="citation">
+        <div class="container">
+            <h2 class="section-title">Citation &nbsp;<a href="https://github.com/startnew/flexdepth" target="_blank" style="color: var(--text-2); font-size: 0.6em; vertical-align: middle;"><i class="fab fa-github"></i></a></h2>
+            <div class="citation-box animate-on-scroll">
+                <div class="citation-header">
+                    <span class="citation-label">BibTeX</span>
+                    <button class="copy-btn" onclick="copyCitation(this)" title="Copy to clipboard"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <pre id="citationCode"><code>@misc{zhu2026robustdrivingperceptionflexible,
+  title={Towards Robust Driving Perception: A Flexible Scale-Driven Family for Self-Supervised Monocular Depth Estimation},
+  author={Zhaowen Zhu and Li Zhang and Yujie Chen and Tian Zhang and Yingjie Wang and Mingxia Zhan},
+  year={2026},
+  eprint={2607.00736},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
+  url={https://arxiv.org/abs/2607.00736}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acknowledgment -->
+    <section id="acknowledgment" class="acknowledgment">
+        <div class="container">
+            <div class="acknowledgment-content animate-on-scroll">
+                <h3><i class="fas fa-handshake"></i> Acknowledgment</h3>
+                <p>This work is supported by the National Natural Science Foundation of China under Grant 62332016.</p>
+                <p style="margin-top: 14px; font-size: 0.86rem; color: var(--text-3);">This website is built based on the <a href="https://depth-anything-3.github.io/" target="_blank" style="color: var(--primary); text-decoration: none;">Depth Anything 3</a> project page template. We thank the DA3 authors for making their template available.</p>
+            </div>
+        </div>
+    </section>
+    </div><!-- end page-content-card -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>FlexDepth &copy; 2026 &nbsp;&middot;&nbsp; ECCV 2026</p>
+        </div>
+    </footer>
+
+    <!-- Zoom Overlay (fullscreen comparison viewer) -->
+    <div class="zoom-overlay" id="zoomOverlay" onclick="closeZoomOverlay()">
+        <div class="zoom-overlay-inner" onclick="event.stopPropagation()">
+            <div class="zoom-overlay-title" id="zoomOverlayTitle">Zoomed Comparison</div>
+            <div class="zoom-overlay-grid" id="zoomOverlayGrid"></div>
+            <div class="zoom-overlay-controls">
+                <button class="zoom-overlay-toggle active" id="toggleRedBox" onclick="toggleOverlayRedBox()">
+                    <i class="fas fa-vector-square"></i> Red Box
+                </button>
+            </div>
+            <div class="zoom-overlay-hint">Click outside or press ESC to close</div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="img-lightbox" id="imgLightbox" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <script src="/projects/flexdepth/script.js"></script>
+</body>
+</html>
