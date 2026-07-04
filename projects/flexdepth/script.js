@@ -52,14 +52,15 @@ function setScene(index) {
     currentScene = index;
     const scene = sceneData[index];
     const prefix = `/projects/flexdepth/assets/imgs/depth_compare/${scene.id}_`;
+    const t = '?t=' + Date.now();
 
-    // Update images
-    document.getElementById('zoomOriginal').src = prefix + 'original.png';
-    document.getElementById('compVitL518').src = prefix + 'vitl_518.png';
-    document.getElementById('compVitL644').src = prefix + 'vitl_644.png';
-    document.getElementById('compVitS518').src = prefix + 'vits_518.png';
-    document.getElementById('compVitS644').src = prefix + 'vits_644.png';
-    document.getElementById('compOurs').src = prefix + 'oursx.png';
+    // Update images (timestamp to bypass cache)
+    document.getElementById('zoomOriginal').src = prefix + 'original.png' + t;
+    document.getElementById('compVitL518').src = prefix + 'vitl_518.png' + t;
+    document.getElementById('compVitL644').src = prefix + 'vitl_644.png' + t;
+    document.getElementById('compVitS518').src = prefix + 'vits_518.png' + t;
+    document.getElementById('compVitS644').src = prefix + 'vits_644.png' + t;
+    document.getElementById('compOurs').src = prefix + 'oursx.png' + t;
 
     // Update zoom rectangle (corrected positions)
     const zoomRectEl = document.getElementById('zoomRect');
@@ -79,6 +80,7 @@ function setScene(index) {
 function updateZoomOverlay(index) {
     const scene = sceneData[index];
     const prefix = `/projects/flexdepth/assets/imgs/depth_compare/${scene.id}_`;
+    const t = '?t=' + Date.now();
     const rectClass = overlayRedBoxVisible ? 'overlay-zoom-rect' : 'overlay-zoom-rect hidden';
     const rectStyle = `left:${scene.left}%;top:${scene.top}%;width:${scene.width}%;height:${scene.height}%;`;
     const grid = document.getElementById('zoomOverlayGrid');
@@ -86,35 +88,35 @@ function updateZoomOverlay(index) {
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-L (1722&times;518)</div>
             <div style="position:relative;">
-                <img src="${prefix}vitl_518.png" alt="DA2 ViT-L 518">
+                <img src="${prefix}vitl_518.png${t}" alt="DA2 ViT-L 518">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-L (644&times;196)</div>
             <div style="position:relative;">
-                <img src="${prefix}vitl_644.png" alt="DA2 ViT-L 644">
+                <img src="${prefix}vitl_644.png${t}" alt="DA2 ViT-L 644">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-S (1722&times;518)</div>
             <div style="position:relative;">
-                <img src="${prefix}vits_518.png" alt="DA2 ViT-S 518">
+                <img src="${prefix}vits_518.png${t}" alt="DA2 ViT-S 518">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-S (644&times;196)</div>
             <div style="position:relative;">
-                <img src="${prefix}vits_644.png" alt="DA2 ViT-S 644">
+                <img src="${prefix}vits_644.png${t}" alt="DA2 ViT-S 644">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item ours-overlay">
             <div class="zoom-overlay-label">Flex-X-Large (Ours)</div>
             <div style="position:relative;">
-                <img src="${prefix}oursx.png" alt="Flex-X-Large">
+                <img src="${prefix}oursx.png${t}" alt="Flex-X-Large">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
