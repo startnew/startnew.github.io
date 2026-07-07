@@ -48,26 +48,53 @@ const sceneData = [
 let currentScene = 0;
 let overlayRedBoxVisible = true;
 
+// Preload all scene images on page load
+const imageCache = {};
+function preloadSceneImages() {
+    sceneData.forEach(scene => {
+        const prefix = `/projects/flexdepth/assets/imgs/depth_compare/${scene.id}_`;
+        ['original', 'vitl_518', 'vitl_644', 'vits_518', 'vits_644', 'oursx'].forEach(suffix => {
+            const img = new Image();
+            img.src = prefix + suffix + '.png';
+            imageCache[prefix + suffix + '.png'] = img;
+        });
+    });
+}
+
 function setScene(index) {
     currentScene = index;
     const scene = sceneData[index];
     const prefix = `/projects/flexdepth/assets/imgs/depth_compare/${scene.id}_`;
-    const t = '?t=' + Date.now();
 
-    // Update images (timestamp to bypass cache)
-    document.getElementById('zoomOriginal').src = prefix + 'original.png' + t;
-    document.getElementById('compVitL518').src = prefix + 'vitl_518.png' + t;
-    document.getElementById('compVitL644').src = prefix + 'vitl_644.png' + t;
-    document.getElementById('compVitS518').src = prefix + 'vits_518.png' + t;
-    document.getElementById('compVitS644').src = prefix + 'vits_644.png' + t;
-    document.getElementById('compOurs').src = prefix + 'oursx.png' + t;
+    // Fade out while loading
+    const zoomMain = document.querySelector('.zoom-main');
+    zoomMain.style.opacity = '0';
+    zoomMain.style.transition = 'opacity 0.15s ease';
 
-    // Update zoom rectangle (corrected positions)
+    // Hide red box until images load
     const zoomRectEl = document.getElementById('zoomRect');
+    zoomRectEl.style.display = 'none';
     zoomRectEl.style.left = scene.left + '%';
     zoomRectEl.style.top = scene.top + '%';
     zoomRectEl.style.width = scene.width + '%';
     zoomRectEl.style.height = scene.height + '%';
+
+    // Wait for original image to load, then show everything
+    const origImg = document.getElementById('zoomOriginal');
+    const onOrigLoad = () => {
+        origImg.removeEventListener('load', onOrigLoad);
+        zoomRectEl.style.display = '';
+        zoomMain.style.opacity = '1';
+    };
+    origImg.addEventListener('load', onOrigLoad);
+
+    // Update images (use cached version if available, no timestamp needed)
+    origImg.src = prefix + 'original.png';
+    document.getElementById('compVitL518').src = prefix + 'vitl_518.png';
+    document.getElementById('compVitL644').src = prefix + 'vitl_644.png';
+    document.getElementById('compVitS518').src = prefix + 'vits_518.png';
+    document.getElementById('compVitS644').src = prefix + 'vits_644.png';
+    document.getElementById('compOurs').src = prefix + 'oursx.png';
 
     // Update scene buttons
     document.querySelectorAll('.scene-btn').forEach(btn => btn.classList.remove('active'));
@@ -80,7 +107,6 @@ function setScene(index) {
 function updateZoomOverlay(index) {
     const scene = sceneData[index];
     const prefix = `/projects/flexdepth/assets/imgs/depth_compare/${scene.id}_`;
-    const t = '?t=' + Date.now();
     const rectClass = overlayRedBoxVisible ? 'overlay-zoom-rect' : 'overlay-zoom-rect hidden';
     const rectStyle = `left:${scene.left}%;top:${scene.top}%;width:${scene.width}%;height:${scene.height}%;`;
     const grid = document.getElementById('zoomOverlayGrid');
@@ -88,35 +114,35 @@ function updateZoomOverlay(index) {
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-L (1722&times;518)</div>
             <div style="position:relative;">
-                <img src="${prefix}vitl_518.png${t}" alt="DA2 ViT-L 518">
+                <img src="${prefix}vitl_518.png" alt="DA2 ViT-L 518">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-L (644&times;196)</div>
             <div style="position:relative;">
-                <img src="${prefix}vitl_644.png${t}" alt="DA2 ViT-L 644">
+                <img src="${prefix}vitl_644.png" alt="DA2 ViT-L 644">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-S (1722&times;518)</div>
             <div style="position:relative;">
-                <img src="${prefix}vits_518.png${t}" alt="DA2 ViT-S 518">
+                <img src="${prefix}vits_518.png" alt="DA2 ViT-S 518">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item">
             <div class="zoom-overlay-label">DA2 ViT-S (644&times;196)</div>
             <div style="position:relative;">
-                <img src="${prefix}vits_644.png${t}" alt="DA2 ViT-S 644">
+                <img src="${prefix}vits_644.png" alt="DA2 ViT-S 644">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
         <div class="zoom-overlay-item ours-overlay">
             <div class="zoom-overlay-label">Flex-X-Large (Ours)</div>
             <div style="position:relative;">
-                <img src="${prefix}oursx.png${t}" alt="Flex-X-Large">
+                <img src="${prefix}oursx.png" alt="Flex-X-Large">
                 <div class="${rectClass}" style="${rectStyle}"></div>
             </div>
         </div>
@@ -275,6 +301,7 @@ function initScrollAnimations() {
 // ===== Init =====
 document.addEventListener('DOMContentLoaded', function() {
     initScrollAnimations();
+    preloadSceneImages();
     // Initialize first scene rect
     setScene(0);
 });
