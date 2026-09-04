@@ -19,6 +19,8 @@
                 <a href="#method">Method</a>
                 <a href="#results">Results</a>
                 <a href="#comparison">Video</a>
+                <a href="#talk">Talk</a>
+                <a href="#poster">Poster</a>
                 <a href="#citation">Citation</a>
                 <a href="https://github.com/startnew/flexdepth" target="_blank" class="nav-github"><i class="fab fa-github"></i> GitHub</a>
             </div>
@@ -51,6 +53,8 @@
                     <a href="/projects/flexdepth/assets/flexdepth_eccv2026.pdf" target="_blank" class="link-btn"><i class="fas fa-file-pdf"></i> Paper</a>
                     <a href="https://arxiv.org/abs/2607.00736" target="_blank" class="link-btn"><i class="fas fa-graduation-cap"></i> arXiv</a>
                     <a href="https://github.com/startnew/flexdepth" target="_blank" class="link-btn"><i class="fab fa-github"></i> Code</a>
+                    <a href="/projects/flexdepth/assets/flexdepth_eccv2026_poster.pdf" target="_blank" class="link-btn"><i class="fas fa-image"></i> Poster</a>
+                    <a href="https://www.youtube.com/watch?v=3d9n97ZnlQE" target="_blank" class="link-btn"><i class="fab fa-youtube"></i> Talk Video</a>
                 </div>
             </div>
         </div>
@@ -132,6 +136,23 @@
                         <h3><i class="fas fa-shield-halved"></i> Adaptive Masking with MuPredictor</h3>
                         <p>The static-dynamic decoupled mask employs an adaptive thresholding function that dynamically adjusts sensitivity based on feature evolution between early and late training stages, ensuring only stable static pixels contribute to confidence evaluation.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Two-Stage Training Convergence & Dynamic Mask -->
+    <section id="training" class="method-section">
+        <div class="container">
+            <h2 class="section-title">Two-Stage Training &amp; Dynamic Mask</h2>
+            <div class="qualitative-grid">
+                <div class="qualitative-item animate-on-scroll">
+                    <img src="/projects/flexdepth/assets/imgs/epoch_absrel.png" alt="Two-Stage Training Convergence" class="clickable-img" onclick="openLightbox(this)">
+                    <p class="figure-caption">Convergence of the two-stage static-dynamic decoupled training on KITTI (Abs Rel vs. epoch). Stage 1 jointly optimizes the Depth Network and PoseNet; Stage 2 introduces the static-dynamic decoupled mask, which further reduces Abs Rel and stabilizes convergence in dynamic scenes.</p>
+                </div>
+                <div class="qualitative-item animate-on-scroll">
+                    <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" poster="/projects/flexdepth/assets/imgs/mask_solo_poster.png"><source src="/projects/flexdepth/assets/videos/mask_solo.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                    <p class="figure-caption">Static-dynamic decoupled mask in action on Cityscapes. The MuPredictor adaptively separates stable static background pixels from dynamic traffic participants, so that only confident static regions supervise the photometric loss.</p>
                 </div>
             </div>
         </div>
@@ -312,6 +333,32 @@
                     <span class="indicator" onclick="setVideo(4)"></span>
                     <span class="indicator" onclick="setVideo(5)"></span>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Talk Video -->
+    <section id="talk" class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">Talk Video</h2>
+            <div class="result-block animate-on-scroll">
+                <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+                    <iframe src="https://www.youtube.com/embed/3d9n97ZnlQE" title="FlexDepth ECCV 2026 Talk" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <p class="figure-caption" style="margin-top: 12px;">5-minute ECCV 2026 presentation of FlexDepth. Also available on <a href="https://www.youtube.com/watch?v=3d9n97ZnlQE" target="_blank" style="color: var(--primary);">YouTube</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Poster -->
+    <section id="poster" class="results-section">
+        <div class="container">
+            <h2 class="section-title">Poster</h2>
+            <div class="result-block animate-on-scroll">
+                <a href="/projects/flexdepth/assets/flexdepth_eccv2026_poster.pdf" target="_blank">
+                    <img src="/projects/flexdepth/assets/imgs/poster.png" alt="FlexDepth ECCV 2026 Poster" class="teaser-image clickable-img" style="border-radius: 12px;">
+                </a>
+                <p class="figure-caption">ECCV 2026 poster. Click to open the full-resolution <a href="/projects/flexdepth/assets/flexdepth_eccv2026_poster.pdf" target="_blank" style="color: var(--primary);">PDF version</a>.</p>
             </div>
         </div>
     </section>
