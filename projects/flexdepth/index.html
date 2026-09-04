@@ -151,8 +151,8 @@
                     <p class="figure-caption">Convergence of the two-stage static-dynamic decoupled training on KITTI (Abs Rel vs. epoch). Stage 1 jointly optimizes the Depth Network and PoseNet; Stage 2 introduces the static-dynamic decoupled mask, which further reduces Abs Rel and stabilizes convergence in dynamic scenes.</p>
                 </div>
                 <div class="qualitative-item animate-on-scroll">
-                    <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" poster="/projects/flexdepth/assets/imgs/mask_solo_poster.png"><source src="/projects/flexdepth/assets/videos/mask_solo.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
-                    <p class="figure-caption">Static-dynamic decoupled mask in action on Cityscapes. The MuPredictor adaptively separates stable static background pixels from dynamic traffic participants, so that only confident static regions supervise the photometric loss.</p>
+                    <div class="video-wrapper"><video playsinline muted autoplay loop width="100%" preload="metadata" poster="/projects/flexdepth/assets/imgs/cs_mask_sequence_poster.png"><source src="/projects/flexdepth/assets/videos/cs_mask_sequence.mp4" type="video/mp4"></video><button class="video-fullscreen-btn" onclick="toggleVideoFullscreen(this)" title="Fullscreen"><i class="fas fa-expand"></i></button></div>
+                    <p class="figure-caption">Static-dynamic decoupled mask on Cityscapes (Input | Depth | GT Disparity | Dynamic Mask). The black-and-white mask separates stable static background (white) from dynamic traffic participants (black), so that only confident static regions supervise the photometric loss.</p>
                 </div>
             </div>
         </div>
