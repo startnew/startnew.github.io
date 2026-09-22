@@ -401,6 +401,20 @@ section { scroll-margin-top: 88px; }
     box-shadow: var(--shadow-sm);
 }
 
+.hero-teaser {
+    max-width: 1080px;
+    margin: 40px auto 0;
+}
+
+.hero-teaser img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: var(--shadow-md, 0 8px 24px rgba(27, 42, 74, 0.18));
+}
+
+.hero-teaser .figure-caption { color: var(--text-2); }
+
 /* ===== Abstract ===== */
 .abstract { padding: 0; background: transparent; }
 
